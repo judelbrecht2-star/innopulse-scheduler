@@ -1,0 +1,71 @@
+(node:14908) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[next-auth][error][OAUTH_CALLBACK_ERROR] 
+https://next-auth.js.org/errors#oauth_callback_error State cookie was missing. {
+  error: Error [OAuthCallbackError]: State cookie was missing.
+      at Object.use (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:10:56984)
+      at l (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:10:59570)
+      at async Object.c (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:10:64355)
+      at async _ (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:34:19756)
+      at async a (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:34:44455)
+      at async e.length.t (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:34:45898)
+      at async l (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\[root-of-the-server]__0jmqzje._.js:4:6410) {
+    code: undefined
+  },
+  providerId: 'google',
+  message: 'State cookie was missing.'
+}
+⨯ Error [PrismaClientUnknownRequestError]: 
+Invalid `prisma.schedule.findFirst()` invocation:
+
+
+Error in connector: Error querying the database: FATAL: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15
+    at async q (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\ssr\[root-of-the-server]__0g0iym9._.js:1:4327) {
+  clientVersion: '6.19.3',
+  digest: '2376773232'
+}
+[next-auth][error][adapter_error_getSessionAndUser] 
+https://next-auth.js.org/errors#adapter_error_getsessionanduser 
+Invalid `prisma.session.findUnique()` invocation:
+
+
+Error in connector: Error querying the database: FATAL: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15 {
+  message: '\n' +
+    'Invalid `prisma.session.findUnique()` invocation:\n' +
+    '\n' +
+    '\n' +
+    'Error in connector: Error querying the database: FATAL: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15',
+  stack: 'PrismaClientUnknownRequestError: \n' +
+    'Invalid `prisma.session.findUnique()` invocation:\n' +
+    '\n' +
+    '\n' +
+    'Error in connector: Error querying the database: FATAL: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15\n' +
+    '    at ei.handleRequestError (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:121:7458)\n' +
+    '    at ei.handleAndLogRequestError (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:121:6593)\n' +
+    '    at ei.request (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:121:6300)\n' +
+    '    at async a (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:130:9551)\n' +
+    '    at async getSessionAndUser (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\.next\\server\\chunks\\ssr\\_0ltbxak._.js:34:50025)',
+  name: 'PrismaClientUnknownRequestError'
+}
+[next-auth][error][SESSION_ERROR] 
+https://next-auth.js.org/errors#session_error 
+Invalid `prisma.session.findUnique()` invocation:
+
+
+Error in connector: Error querying the database: FATAL: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15 Error [GetSessionAndUserError]: 
+Invalid `prisma.session.findUnique()` invocation:
+
+
+Error in connector: Error querying the database: FATAL: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15
+    at async getSessionAndUser (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\ssr\_0ltbxak._.js:34:50025) {
+  code: undefined
+}
+⨯ Error [PrismaClientUnknownRequestError]: 
+Invalid `prisma.schedule.findFirst()` invocation:
+
+
+Error in connector: Error querying the database: FATAL: (EMAXCONNSESSION) max clients reached in session mode - max clients are limited to pool_size: 15
+    at async q (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\ssr\[root-of-the-server]__0g0iym9._.js:1:4327) {
+  clientVersion: '6.19.3',
+  digest: '2376773232'
+}

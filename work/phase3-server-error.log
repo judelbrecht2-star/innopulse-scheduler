@@ -1,0 +1,17 @@
+(node:24624) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[next-auth][error][OAUTH_CALLBACK_ERROR] 
+https://next-auth.js.org/errors#oauth_callback_error State cookie was missing. {
+  error: Error [OAuthCallbackError]: State cookie was missing.
+      at Object.use (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:10:56984)
+      at l (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:10:59570)
+      at async Object.c (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:10:64355)
+      at async _ (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:34:19756)
+      at async a (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:34:44455)
+      at async e.length.t (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:34:45898)
+      at async l (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\[root-of-the-server]__037djb_._.js:1:5268) {
+    code: undefined
+  },
+  providerId: 'google',
+  message: 'State cookie was missing.'
+}

@@ -1,0 +1,94 @@
+[next-auth][error][adapter_error_getSessionAndUser] 
+https://next-auth.js.org/errors#adapter_error_getsessionanduser 
+Invalid `prisma.session.findUnique()` invocation:
+
+
+Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`
+
+Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`. {
+  message: '\n' +
+    'Invalid `prisma.session.findUnique()` invocation:\n' +
+    '\n' +
+    '\n' +
+    "Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`\n" +
+    '\n' +
+    'Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`.',
+  stack: 'PrismaClientKnownRequestError: \n' +
+    'Invalid `prisma.session.findUnique()` invocation:\n' +
+    '\n' +
+    '\n' +
+    "Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`\n" +
+    '\n' +
+    'Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`.\n' +
+    '    at ei.handleRequestError (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:121:7268)\n' +
+    '    at ei.handleAndLogRequestError (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:121:6593)\n' +
+    '    at ei.request (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:121:6300)\n' +
+    '    at async a (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:130:9551)\n' +
+    '    at async getSessionAndUser (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\.next\\server\\chunks\\ssr\\_0ltbxak._.js:34:50025)',
+  name: 'PrismaClientKnownRequestError'
+}
+[next-auth][error][adapter_error_getSessionAndUser] 
+https://next-auth.js.org/errors#adapter_error_getsessionanduser 
+Invalid `prisma.session.findUnique()` invocation:
+
+
+Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`
+
+Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`. {
+  message: '\n' +
+    'Invalid `prisma.session.findUnique()` invocation:\n' +
+    '\n' +
+    '\n' +
+    "Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`\n" +
+    '\n' +
+    'Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`.',
+  stack: 'PrismaClientKnownRequestError: \n' +
+    'Invalid `prisma.session.findUnique()` invocation:\n' +
+    '\n' +
+    '\n' +
+    "Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`\n" +
+    '\n' +
+    'Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`.\n' +
+    '    at ei.handleRequestError (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:121:7268)\n' +
+    '    at ei.handleAndLogRequestError (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:121:6593)\n' +
+    '    at ei.request (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:121:6300)\n' +
+    '    at async a (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_5b374d7e706ff4c308dc257beaae2a14\\node_modules\\@prisma\\client\\runtime\\library.js:130:9551)\n' +
+    '    at async getSessionAndUser (C:\\Users\\IsaiahEngelbrecht\\Documents\\Codex\\2026-06-18\\role-context-you-are-an-expert\\.next\\server\\chunks\\ssr\\_0ltbxak._.js:34:50025)',
+  name: 'PrismaClientKnownRequestError'
+}
+[next-auth][error][SESSION_ERROR] 
+https://next-auth.js.org/errors#session_error 
+Invalid `prisma.session.findUnique()` invocation:
+
+
+Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`
+
+Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`. Error [GetSessionAndUserError]: 
+Invalid `prisma.session.findUnique()` invocation:
+
+
+Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`
+
+Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`.
+    at async getSessionAndUser (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\ssr\_0ltbxak._.js:34:50025) {
+  code: 'P1001'
+}
+[next-auth][error][SESSION_ERROR] 
+https://next-auth.js.org/errors#session_error 
+Invalid `prisma.session.findUnique()` invocation:
+
+
+Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`
+
+Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`. Error [GetSessionAndUserError]: 
+Invalid `prisma.session.findUnique()` invocation:
+
+
+Can't reach database server at `aws-0-eu-west-1.pooler.supabase.com:5432`
+
+Please make sure your database server is running at `aws-0-eu-west-1.pooler.supabase.com:5432`.
+    at async getSessionAndUser (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\ssr\_0ltbxak._.js:34:50025) {
+  code: 'P1001'
+}
+(node:3048) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)

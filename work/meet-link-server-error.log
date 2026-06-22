@@ -1,0 +1,17 @@
+(node:16536) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[next-auth][error][OAUTH_CALLBACK_ERROR] 
+https://next-auth.js.org/errors#oauth_callback_error state mismatch, expected cpbuLPmONJxAf1HZa7cdZ9g7yi9Me2kno98hGRFaduo, got: EGEVeHL0F3tS0FXUOzijiPfH87TU19xXYQ8yYD4lIYs {
+  error: Error [OAuthCallbackError]: state mismatch, expected cpbuLPmONJxAf1HZa7cdZ9g7yi9Me2kno98hGRFaduo, got: EGEVeHL0F3tS0FXUOzijiPfH87TU19xXYQ8yYD4lIYs
+      at Y.callback (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:10:1808)
+      at l (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:10:59915)
+      at async Object.c (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:10:64355)
+      at async _ (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:34:19756)
+      at async a (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:34:44455)
+      at async e.length.t (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\_11599ze._.js:34:45898)
+      at async l (C:\Users\IsaiahEngelbrecht\Documents\Codex\2026-06-18\role-context-you-are-an-expert\.next\server\chunks\[root-of-the-server]__0jmqzje._.js:4:6410) {
+    code: undefined
+  },
+  providerId: 'google',
+  message: 'state mismatch, expected cpbuLPmONJxAf1HZa7cdZ9g7yi9Me2kno98hGRFaduo, got: EGEVeHL0F3tS0FXUOzijiPfH87TU19xXYQ8yYD4lIYs'
+}

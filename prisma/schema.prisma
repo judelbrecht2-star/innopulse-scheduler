@@ -1,0 +1,536 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  HOST
+  ADMIN
+}
+
+enum CalendarProvider {
+  GOOGLE
+  MICROSOFT
+}
+
+enum CalendarConnectionStatus {
+  ACTIVE
+  REAUTH_REQUIRED
+  ERROR
+}
+
+enum EventTypeStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum LocationType {
+  GOOGLE_MEET
+  MICROSOFT_TEAMS
+  PHONE
+  IN_PERSON
+  CUSTOM
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+  REJECTED
+  RESCHEDULED
+  NO_SHOW
+}
+
+enum AvailabilityOverrideType {
+  AVAILABLE
+  UNAVAILABLE
+}
+
+enum QuestionType {
+  SHORT_TEXT
+  LONG_TEXT
+  EMAIL
+  PHONE
+  NUMBER
+  SINGLE_SELECT
+  MULTI_SELECT
+  CHECKBOX
+}
+
+enum TeamRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum SchedulingType {
+  INDIVIDUAL
+  ROUND_ROBIN
+  COLLECTIVE
+}
+
+enum RoutingFormStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum WorkflowStatus {
+  ACTIVE
+  PAUSED
+}
+
+enum WorkflowTrigger {
+  BOOKING_CREATED
+  BEFORE_START
+  AFTER_END
+  BOOKING_CANCELED
+}
+
+enum WorkflowRecipient {
+  INVITEE
+  HOST
+}
+
+enum WorkflowRunStatus {
+  QUEUED
+  PROCESSING
+  SENT
+  FAILED
+  CANCELED
+}
+
+enum TimeFormat {
+  TWELVE_HOUR
+  TWENTY_FOUR_HOUR
+}
+
+model User {
+  id                        String     @id @default(cuid())
+  name                      String?
+  username                  String?    @unique
+  email                     String?    @unique
+  emailVerified             DateTime?  @db.Timestamptz(3)
+  image                     String?
+  bio                       String?    @db.Text
+  timeZone                  String     @default("Africa/Johannesburg")
+  locale                    String     @default("en-ZA")
+  weekStart                 Int        @default(1)
+  timeFormat                TimeFormat @default(TWELVE_HOUR)
+  allowSearchEngineIndexing Boolean    @default(false)
+  role                      UserRole   @default(HOST)
+
+  accounts            Account[]
+  sessions            Session[]
+  schedules           Schedule[]
+  ownedEventTypes     EventType[]          @relation("EventTypeOwner")
+  eventTypeHosts      EventTypeHost[]
+  hostedBookings      Booking[]            @relation("BookingHost")
+  calendarConnections CalendarConnection[]
+  ownedTeams          Team[]               @relation("TeamOwner")
+  teamMemberships     TeamMember[]
+  routingForms        RoutingForm[]        @relation("RoutingFormOwner")
+  workflows           Workflow[]           @relation("WorkflowOwner")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+}
+
+model Account {
+  id                       String  @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? @db.Text
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+  refresh_token_expires_in Int?
+
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  calendarConnection CalendarConnection?
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime @db.Timestamptz(3)
+
+  @@unique([identifier, token])
+}
+
+model CalendarConnection {
+  id            String                   @id @default(cuid())
+  userId        String
+  accountId     String                   @unique
+  provider      CalendarProvider
+  providerEmail String?
+  status        CalendarConnectionStatus @default(ACTIVE)
+  lastSyncedAt  DateTime?                @db.Timestamptz(3)
+  lastError     String?                  @db.Text
+
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account        Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  calendars      ExternalCalendar[]
+  calendarEvents CalendarEvent[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([userId, provider])
+}
+
+model ExternalCalendar {
+  id                 String    @id @default(cuid())
+  connectionId       String
+  externalId         String
+  name               String
+  timeZone           String?
+  isPrimary          Boolean   @default(false)
+  isConflictCalendar Boolean   @default(true)
+  isDestination      Boolean   @default(false)
+  readOnly           Boolean   @default(false)
+  syncToken          String?   @db.Text
+  channelId          String?
+  channelResource    String?
+  channelExpiresAt   DateTime? @db.Timestamptz(3)
+
+  connection     CalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  destinationFor EventType[]        @relation("EventTypeDestinationCalendar")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([connectionId, externalId])
+  @@index([connectionId, isConflictCalendar])
+}
+
+model Schedule {
+  id        String  @id @default(cuid())
+  ownerId   String
+  name      String
+  timeZone  String
+  isDefault Boolean @default(false)
+
+  owner             User                   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  eventTypes        EventType[]
+  availabilityRules AvailabilityRule[]
+  overrides         AvailabilityOverride[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([ownerId, name])
+  @@index([ownerId, isDefault])
+}
+
+model AvailabilityRule {
+  id         String   @id @default(cuid())
+  scheduleId String
+  dayOfWeek  Int
+  startTime  DateTime @db.Time(0)
+  endTime    DateTime @db.Time(0)
+
+  schedule Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, dayOfWeek, startTime, endTime])
+  @@index([scheduleId, dayOfWeek])
+}
+
+model AvailabilityOverride {
+  id         String                   @id @default(cuid())
+  scheduleId String
+  date       DateTime                 @db.Date
+  type       AvailabilityOverrideType
+  startTime  DateTime?                @db.Time(0)
+  endTime    DateTime?                @db.Time(0)
+  note       String?
+
+  schedule Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  @@index([scheduleId, date])
+}
+
+model EventType {
+  id                       String          @id @default(cuid())
+  ownerId                  String
+  scheduleId               String?
+  destinationCalendarId    String?
+  teamId                   String?
+  title                    String
+  slug                     String
+  description              String?         @db.Text
+  status                   EventTypeStatus @default(DRAFT)
+  durationMinutes          Int
+  slotIntervalMinutes      Int?
+  bufferBeforeMinutes      Int             @default(0)
+  bufferAfterMinutes       Int             @default(0)
+  minimumNoticeMinutes     Int             @default(120)
+  bookingWindowDays        Int             @default(60)
+  maxBookingsPerDay        Int?
+  requiresConfirmation     Boolean         @default(false)
+  confirmationEmailEnabled Boolean         @default(true)
+  confirmationEmailSubject String          @default("Your meeting is confirmed")
+  confirmationEmailMessage String          @default("Thank you for booking time with us. We are looking forward to the conversation.") @db.Text
+  meetingAgenda            String          @default("Understand your goals\nExplore the current challenge\nAgree practical next steps") @db.Text
+  homeworkCtaLabel         String          @default("Complete the free assessment")
+  homeworkCtaUrl           String?         @default("https://innopulse.thegrowthsystem.co.za/")
+  allowGuests              Boolean         @default(false)
+  locationType             LocationType    @default(GOOGLE_MEET)
+  locationValue            String?
+  schedulingType           SchedulingType  @default(INDIVIDUAL)
+  metadata                 Json?
+
+  owner               User              @relation("EventTypeOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  schedule            Schedule?         @relation(fields: [scheduleId], references: [id], onDelete: SetNull)
+  destinationCalendar ExternalCalendar? @relation("EventTypeDestinationCalendar", fields: [destinationCalendarId], references: [id], onDelete: SetNull)
+  team                Team?             @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  hosts               EventTypeHost[]
+  questions           EventQuestion[]
+  bookings            Booking[]
+  routingFallbacks    RoutingForm[]     @relation("RoutingFormFallback")
+  workflows           Workflow[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([ownerId, slug])
+  @@index([ownerId, status])
+  @@index([scheduleId])
+  @@index([teamId])
+}
+
+model Team {
+  id      String @id @default(cuid())
+  ownerId String
+  name    String
+  slug    String
+
+  owner        User          @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members      TeamMember[]
+  eventTypes   EventType[]
+  routingForms RoutingForm[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([ownerId, slug])
+  @@index([ownerId])
+}
+
+model TeamMember {
+  teamId String
+  userId String
+  role   TeamRole @default(MEMBER)
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@id([teamId, userId])
+  @@index([userId])
+}
+
+model RoutingForm {
+  id                  String            @id @default(cuid())
+  ownerId             String
+  teamId              String?
+  fallbackEventTypeId String?
+  name                String
+  slug                String
+  status              RoutingFormStatus @default(DRAFT)
+  question            Json
+  routes              Json
+
+  owner             User       @relation("RoutingFormOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  team              Team?      @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  fallbackEventType EventType? @relation("RoutingFormFallback", fields: [fallbackEventTypeId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([ownerId, slug])
+  @@index([teamId, status])
+  @@index([fallbackEventTypeId])
+}
+
+model Workflow {
+  id            String            @id @default(cuid())
+  ownerId       String
+  eventTypeId   String?
+  name          String
+  status        WorkflowStatus    @default(ACTIVE)
+  trigger       WorkflowTrigger
+  offsetMinutes Int               @default(0)
+  recipient     WorkflowRecipient
+  subject       String
+  body          String            @db.Text
+
+  owner     User          @relation("WorkflowOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  eventType EventType?    @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  runs      WorkflowRun[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([ownerId, status])
+  @@index([eventTypeId])
+}
+
+model WorkflowRun {
+  id                String            @id @default(cuid())
+  workflowId        String
+  bookingId         String
+  scheduledFor      DateTime          @db.Timestamptz(3)
+  status            WorkflowRunStatus @default(QUEUED)
+  attempts          Int               @default(0)
+  lastError         String?           @db.Text
+  providerMessageId String?
+  sentAt            DateTime?         @db.Timestamptz(3)
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  booking  Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([workflowId, bookingId])
+  @@index([status, scheduledFor])
+  @@index([bookingId])
+}
+
+model EventTypeHost {
+  id          String  @id @default(cuid())
+  eventTypeId String
+  userId      String
+  isPrimary   Boolean @default(false)
+  priority    Int     @default(0)
+  weight      Int     @default(100)
+
+  eventType EventType @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventTypeId, userId])
+  @@index([userId])
+}
+
+model EventQuestion {
+  id          String       @id @default(cuid())
+  eventTypeId String
+  type        QuestionType
+  label       String
+  placeholder String?
+  helpText    String?
+  required    Boolean      @default(false)
+  position    Int
+  options     Json?
+
+  eventType EventType       @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  answers   BookingAnswer[]
+
+  @@unique([eventTypeId, position])
+}
+
+model Booking {
+  id                          String        @id @default(cuid())
+  uid                         String        @unique @default(uuid())
+  idempotencyKey              String?       @unique
+  eventTypeId                 String
+  hostId                      String
+  startAt                     DateTime      @db.Timestamptz(3)
+  endAt                       DateTime      @db.Timestamptz(3)
+  blockedStartAt              DateTime      @db.Timestamptz(3)
+  blockedEndAt                DateTime      @db.Timestamptz(3)
+  status                      BookingStatus @default(CONFIRMED)
+  title                       String
+  description                 String?       @db.Text
+  location                    String?
+  inviteeName                 String
+  inviteeEmail                String
+  inviteePhone                String?
+  inviteeTimeZone             String
+  inviteeLocale               String        @default("en")
+  cancellationReason          String?       @db.Text
+  rejectionReason             String?       @db.Text
+  canceledAt                  DateTime?     @db.Timestamptz(3)
+  rescheduledFromId           String?
+  metadata                    Json?
+  confirmationEmailSentAt     DateTime?     @db.Timestamptz(3)
+  confirmationEmailProviderId String?
+
+  eventType       EventType       @relation(fields: [eventTypeId], references: [id], onDelete: Restrict)
+  host            User            @relation("BookingHost", fields: [hostId], references: [id], onDelete: Restrict)
+  rescheduledFrom Booking?        @relation("BookingReschedule", fields: [rescheduledFromId], references: [id], onDelete: SetNull)
+  rescheduledTo   Booking[]       @relation("BookingReschedule")
+  answers         BookingAnswer[]
+  calendarEvent   CalendarEvent?
+  workflowRuns    WorkflowRun[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([eventTypeId, status, startAt])
+  @@index([hostId, status, startAt, endAt])
+  @@index([inviteeEmail, startAt])
+  @@index([rescheduledFromId])
+}
+
+model BookingAnswer {
+  id            String       @id @default(cuid())
+  bookingId     String
+  questionId    String?
+  questionLabel String
+  questionType  QuestionType
+  value         Json
+
+  booking  Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  question EventQuestion? @relation(fields: [questionId], references: [id], onDelete: SetNull)
+
+  @@index([bookingId])
+  @@index([questionId])
+}
+
+model CalendarEvent {
+  id              String  @id @default(cuid())
+  bookingId       String  @unique
+  connectionId    String?
+  externalEventId String
+  iCalUid         String?
+  htmlLink        String?
+  conferenceUrl   String?
+  conferenceData  Json?
+
+  booking    Booking             @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  connection CalendarConnection? @relation(fields: [connectionId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([connectionId, externalEventId])
+  @@index([connectionId])
+}
