@@ -2,7 +2,7 @@
 
 import { Building2, KeyRound, LockKeyhole, Mail } from "lucide-react";
 import { signIn } from "next-auth/react";
-import type { ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 interface SignInButtonsProps {
   googleEnabled: boolean;
   microsoftEnabled: boolean;
+  emailEnabled?: boolean;
 }
 
 function GoogleMark() {
@@ -39,8 +40,22 @@ function ProviderTile({ label, enabled, icon, onClick }: { label: string; enable
   );
 }
 
-export function SignInButtons({ googleEnabled, microsoftEnabled }: SignInButtonsProps) {
-  const anyProviderEnabled = googleEnabled || microsoftEnabled;
+export function SignInButtons({ googleEnabled, microsoftEnabled, emailEnabled = false }: SignInButtonsProps) {
+  const anyProviderEnabled = googleEnabled || microsoftEnabled || emailEnabled;
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  async function handleEmailSignIn(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!email.trim() || status === "sending") return;
+    setStatus("sending");
+    try {
+      const result = await signIn("email", { email: email.trim(), redirect: false, callbackUrl: "/dashboard" });
+      setStatus(result?.error ? "error" : "sent");
+    } catch {
+      setStatus("error");
+    }
+  }
 
   return (
     <div>
@@ -51,15 +66,34 @@ export function SignInButtons({ googleEnabled, microsoftEnabled }: SignInButtons
         <ProviderTile label="SSO" enabled={false} icon={<Building2 className="size-8" />} />
       </div>
 
-      {!anyProviderEnabled && <p className="mt-4 rounded-button border border-brand-amber/40 bg-brand-amber/10 p-4 text-sm leading-6">Add Google or Microsoft OAuth credentials before signing in.</p>}
+      {!anyProviderEnabled && <p className="mt-4 rounded-button border border-brand-amber/40 bg-brand-amber/10 p-4 text-sm leading-6">Add a sign-in method before continuing.</p>}
 
       <div className="my-7 flex items-center gap-4 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" /><span>or continue with email</span><span className="h-px flex-1 bg-border" /></div>
-      <div className="relative">
-        <Mail className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <input type="email" disabled aria-label="Work email coming soon" placeholder="Work email address" className="ip-input pl-11 pr-24 disabled:cursor-not-allowed disabled:bg-brand-cream/50" />
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 rounded-pill bg-muted px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Coming soon</span>
-      </div>
-      <Button type="button" disabled className="mt-3 w-full"><LockKeyhole className="size-4" /> Continue securely</Button>
+
+      {status === "sent" ? (
+        <p className="rounded-button border border-brand-green/50 bg-brand-green/10 p-4 text-sm leading-6">
+          Check your inbox &mdash; we sent a secure sign-in link to <strong>{email}</strong>. It expires in 24 hours.
+        </p>
+      ) : (
+        <form onSubmit={handleEmailSignIn}>
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="email"
+              required
+              disabled={!emailEnabled || status === "sending"}
+              value={email}
+              onChange={(event) => { setEmail(event.target.value); if (status === "error") setStatus("idle"); }}
+              aria-label="Work email address"
+              placeholder="Work email address"
+              className="ip-input pl-11 pr-24 disabled:cursor-not-allowed disabled:bg-brand-cream/50"
+            />
+            {!emailEnabled && <span className="absolute right-3 top-1/2 -translate-y-1/2 rounded-pill bg-muted px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Coming soon</span>}
+          </div>
+          {status === "error" && <p className="mt-2 text-sm text-red-600">We could not send the link. Check the address and try again.</p>}
+          <Button type="submit" disabled={!emailEnabled || status === "sending"} className="mt-3 w-full"><LockKeyhole className="size-4" /> {status === "sending" ? "Sending link…" : "Continue securely"}</Button>
+        </form>
+      )}
     </div>
   );
 }
